@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: "SpringSecureApp"
+server:
+  servlet:
+    context-path: /springsecurity
+  port: 10000

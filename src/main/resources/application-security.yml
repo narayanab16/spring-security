@@ -1,0 +1,20 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            scope: profile
+            authorization-grant-type: password
+            client-id: kc-app
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8383/realms/kc-realm-app
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8383/realms/kc-realm-app
+keycloak:
+  #token_url: "http://localhost:8383/realms/kc-realm-app/protocol/openid-connect/token"
+  introspect_token_url: "http://localhost:8383/realms/kc-realm-app/protocol/openid-connect/token/introspect"
+  client_id: kc-app-clientcreds
+  client_secret: QmKKHm6pFbu2IXRSK8mqlY0O0GfO8aU7
