@@ -1,15 +1,15 @@
 spring:
   security:
     oauth2:
-      client:
-        registration:
-          keycloak:
-            scope: profile
-            authorization-grant-type: password
-            client-id: kc-app
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:8383/realms/kc-realm-app
+      #client:
+       # registration:
+        #  keycloak:
+         #   scope: profile
+          #  authorization-grant-type: password
+           # client-id: kc-app
+        #provider:
+         # keycloak:
+          #  issuer-uri: http://localhost:8383/realms/kc-realm-app
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8383/realms/kc-realm-app
