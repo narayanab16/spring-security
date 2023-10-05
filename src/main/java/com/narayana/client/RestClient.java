@@ -11,9 +11,9 @@ import java.util.Map;
 public class RestClient {
     public static void main(String[] args) {
         //String accessToken = getAccessTokenForPublicClient();// Can't be introspected
-        //introspectToken(accessToken);
+        //introspectTokenPublicClient(accessToken);
         String accessTokenConfClient = getAccessTokenForConfidentialClient(); // Can be introspected
-        introspectToken(accessTokenConfClient);
+        introspectTokenConfClient(accessTokenConfClient);
         // call microservice end points
         restAPIGetHome(accessTokenConfClient);
         restAPIAddUser(accessTokenConfClient);
@@ -40,14 +40,35 @@ public class RestClient {
         return accessToken;
     }
 
-    private static void introspectToken(String accessToken) {
+    private static void introspectTokenPublicClient(String accessToken) {
         RestTemplate client = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        // oauth server token end point
+        // oauth server introspect token end point
         String introspect_token_url = "http://localhost:8383/realms/kc-realm-app/protocol/openid-connect/token/introspect";
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
         // public client :  username and password
-        //String valueToEncode = "app-user1" + ":" + "admin123"; // username:password
+        String valueToEncode = "app-user1" + ":" + "admin123"; // username:password
+        String base64 = Base64.getEncoder().encodeToString(valueToEncode.getBytes());
+        System.out.println(base64);
+        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.AUTHORIZATION, "Basic " + base64);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("token", accessToken);
+        params.add("token_type_hint", "access_token");
+        HttpEntity httpEntity = new HttpEntity<>(params, headers);
+        // call introspect token rest api
+        ResponseEntity<Map> response = client.exchange(introspect_token_url, HttpMethod.POST, httpEntity, Map.class);
+        if(response.getStatusCode().value() == 200) {
+            System.out.println("introspect token " + response.getBody().get("active"));
+        }
+    }
+
+    private static void introspectTokenConfClient(String accessToken) {
+        RestTemplate client = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        // oauth server introspect token end point
+        String introspect_token_url = "http://localhost:8383/realms/kc-realm-app/protocol/openid-connect/token/introspect";
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
         // confidential client: client_credentials
         String valueToEncode = "kc-app-clientcreds" + ":" + "QmKKHm6pFbu2IXRSK8mqlY0O0GfO8aU7"; // client_id:client_secret
         String base64 = Base64.getEncoder().encodeToString(valueToEncode.getBytes());
