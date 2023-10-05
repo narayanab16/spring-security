@@ -46,6 +46,9 @@ public class RestClient {
         // oauth server token end point
         String introspect_token_url = "http://localhost:8383/realms/kc-realm-app/protocol/openid-connect/token/introspect";
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+        // public client :  username and password
+        //String valueToEncode = "app-user1" + ":" + "admin123"; // username:password
+        // confidential client: client_credentials
         String valueToEncode = "kc-app-clientcreds" + ":" + "QmKKHm6pFbu2IXRSK8mqlY0O0GfO8aU7"; // client_id:client_secret
         String base64 = Base64.getEncoder().encodeToString(valueToEncode.getBytes());
         System.out.println(base64);
@@ -78,6 +81,7 @@ public class RestClient {
         ResponseEntity<Map> response = client.exchange(token_url, HttpMethod.POST, httpEntity, Map.class);
         String accessToken = "";
         if(response.getStatusCode().value() == 200) {
+            System.out.println(response.getBody());
             accessToken = (String) response.getBody().get("access_token");
         }
         return accessToken;
