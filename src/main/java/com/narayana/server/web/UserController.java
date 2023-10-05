@@ -69,7 +69,7 @@ public class UserController {
         // call introspect token rest api
         ResponseEntity<Map> response = client.exchange(introspectTokenUrl, HttpMethod.POST, httpEntity, Map.class);
         if(response.getStatusCode().value() == 200) {
-            if (response.getBody().get("active").equals("true")) {
+            if ((Boolean) response.getBody().get("active")) {
                 LOG.info("validate Token - success");
                 return true;
              } else {
